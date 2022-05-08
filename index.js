@@ -76,54 +76,7 @@ export default class Trimmer extends React.Component {
     this.trackPanResponder = this.createTrackPanResponder()
     this.leftHandlePanResponder = this.createLeftHandlePanResponder()
     this.rightHandlePanResponder = this.createRightHandlePanResponder()
-    this.scrubHandlePanResponder = this.createScrubHandlePanResponder()
   }
-
-
-  createScrubHandlePanResponder = () => PanResponder.create({
-    onStartShouldSetPanResponder: (evt, gestureState) => true,
-    onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-    onMoveShouldSetPanResponder: (evt, gestureState) => true,
-    onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-    onPanResponderGrant: (evt, gestureState) => {
-      this.setState({
-        scrubbing: true,
-        internalScrubbingPosition: this.props.scrubberPosition,
-      })
-      this.handleScrubberPressIn()
-    },
-    onPanResponderMove: (evt, gestureState) => {
-      const { trackScale } = this.state;
-      const {
-        scrubberPosition,
-        trimmerLeftHandlePosition,
-        trimmerRightHandlePosition,
-        totalDuration,
-      } = this.props;
-      
-      const trackWidth = (screenWidth) * trackScale
-      const calculatedScrubberPosition = (scrubberPosition / totalDuration) * trackWidth;
-      
-      const newScrubberPosition = ((calculatedScrubberPosition + gestureState.dx) / trackWidth ) * totalDuration
-      
-      const lowerBound = Math.max(0, trimmerLeftHandlePosition)
-      const upperBound = trimmerRightHandlePosition
-
-      const newBoundedScrubberPosition = this.clamp({
-        value: newScrubberPosition,
-        min: lowerBound,
-        max: upperBound
-      })
-      
-      this.setState({ internalScrubbingPosition: newBoundedScrubberPosition })
-    },
-    onPanResponderRelease: (evt, gestureState) => {
-      this.handleScrubbingValueChange(this.state.internalScrubbingPosition)
-      this.setState({ scrubbing: false })
-    },
-    onPanResponderTerminationRequest: (evt, gestureState) => true,
-    onShouldBlockNativeResponder: (evt, gestureState) => true
-  })
 
   createRightHandlePanResponder = () => PanResponder.create({
     onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -442,14 +395,9 @@ export default class Trimmer extends React.Component {
               ? (
                 <View style={[
                     styles.scrubberContainer,
-                    { left: actualScrubPosition - 8 },
+                    { left: actualScrubPosition },
                   ]} 
-                  hitSlop={{top: 8, bottom: 8, right: 8, left: 8}}
-                  {...this.scrubHandlePanResponder.panHandlers}
-                >
-                  <View
-                    style={[styles.scrubberHead, { backgroundColor: scrubberColor }]}
-                  />
+                  hitSlop={{top: 8, bottom: 8, right: 8, left: 8}} >
                   <View style={[styles.scrubberTail, { backgroundColor: scrubberColor }]} />
                 </View>
               )
@@ -552,21 +500,15 @@ const styles = StyleSheet.create({
   scrubberContainer: {
     zIndex: 1,
     position: 'absolute',
-    width: 14,
+    width: 6,
     height: "100%",
     // justifyContent: 'center',
     alignItems: 'center',
   },
-  scrubberHead: {
-    position: 'absolute',
-    backgroundColor: SCRUBBER_COLOR,
-    width: 14,
-    height: 14,
-    borderRadius: 14,
-  },
   scrubberTail: {
     backgroundColor: SCRUBBER_COLOR,
-    height: 123,
+    height: 100,
+    top: 20,
     width: 3,
     borderBottomLeftRadius: 3,
     borderBottomRightRadius: 3,
