@@ -442,7 +442,7 @@ export default class Trimmer extends React.Component {
               ? (
                 <View style={[
                     styles.scrubberContainer,
-                    { left: actualScrubPosition },
+                    { left: actualScrubPosition - 8 },
                   ]} 
                   hitSlop={{top: 8, bottom: 8, right: 8, left: 8}}
                   {...this.scrubHandlePanResponder.panHandlers}
