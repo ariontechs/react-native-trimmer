@@ -395,9 +395,8 @@ export default class Trimmer extends React.Component {
               ? (
                 <View style={[
                     styles.scrubberContainer,
-                    { left: actualScrubPosition },
-                  ]} 
-                  hitSlop={{top: 8, bottom: 8, right: 8, left: 8}} >
+                    { left: actualScrubPosition  },
+                  ]}  >
                   <View style={[styles.scrubberTail, { backgroundColor: scrubberColor }]} />
                 </View>
               )
@@ -500,7 +499,7 @@ const styles = StyleSheet.create({
   scrubberContainer: {
     zIndex: 1,
     position: 'absolute',
-    width: 6,
+    width: 3,
     height: "100%",
     // justifyContent: 'center',
     alignItems: 'center',
