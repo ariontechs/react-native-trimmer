@@ -238,7 +238,7 @@ export default class Trimmer extends React.Component {
           const newTrackScaleValue = trackScale + scaleStep;
           const newBoundedTrackScaleValue = Math.max(Math.min(newTrackScaleValue, maximumZoomLevel), 1)
   
-          this.setState({trackScale: newBoundedTrackScaleValue})
+          this.props?.onScaleChange(newBoundedTrackScaleValue)
         } else {
           const stepValue = (gestureState.dy - this.lastScaleDy);
           this.lastScaleDy = gestureState.dy
@@ -248,8 +248,8 @@ export default class Trimmer extends React.Component {
   
           const newTrackScaleValue = trackScale + scaleStep;
           const newBoundedTrackScaleValue = Math.max(Math.min(newTrackScaleValue, maximumZoomLevel), 1)
-  
-          this.setState({trackScale: newBoundedTrackScaleValue})
+
+          this.props?.onScaleChange(newBoundedTrackScaleValue)
         }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
@@ -283,6 +283,13 @@ export default class Trimmer extends React.Component {
   handleScrubberPressIn = () => {
     const { onScrubberPressIn } = this.props;
     onScrubberPressIn && onScrubberPressIn()
+  }
+
+  static getDerivedStateFromProps(props, current_state) {
+    if (current_state.trackScale !== props.scale) {
+      return {trackScale: props.scale}
+    }
+    return null
   }
 
   render() {
